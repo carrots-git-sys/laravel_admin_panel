@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CharacterisitcResource\Pages;
-use App\Filament\Resources\CharacterisitcResource\RelationManagers;
-use App\Models\Characterisitc;
+use App\Filament\Resources\CharacteristicResource\Pages;
+use App\Filament\Resources\CharacteristicResource\RelationManagers;
+use App\Models\Characteristic;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CharacterisitcResource extends Resource
+class CharacteristicResource extends Resource
 {
-    protected static ?string $model = Characterisitc::class;
+    protected static ?string $model = Characteristic::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -26,23 +26,22 @@ class CharacterisitcResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Group::make([
-                    Forms\Components\TextInput::make('meta_data.description')
-                        ->label('Description')
-                        ->required(),
-                    Forms\Components\Select::make('meta_data.type')
-                        ->label('Type')
-                        ->options([
-                            'boolean' => 'Boolean',
-                            'integer' => 'Integer',
-                            'string' => 'String',
-                            'float' => 'Float',
-                            'date' => 'Date',
-                        ])
-                        ->required(),
-                ])->columnSpanFull(),
+                Forms\Components\Textarea::make('meta_data.description')
+                    ->label('Description')
+                    ->required(),
+                Forms\Components\Select::make('meta_data.type')
+                    ->label('Type')
+                    ->options([
+                        'boolean' => 'Boolean',
+                        'integer' => 'Integer',
+                        'string' => 'String',
+                        'float' => 'Float',
+                        'date' => 'Date',
+                    ])
+                    ->required(),
                 Forms\Components\Select::make('characteristic_category_id')
-                    ->relationship('characteristicCategory', 'name')
+                    ->relationship('category', 'name')
+                    ->getOptionLabelFromRecordUsing(fn($record) => $record->name ?? 'Unnamed Category')
                     ->required(),
             ]);
     }
@@ -76,9 +75,9 @@ class CharacterisitcResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCharacterisitcs::route('/'),
-            'create' => Pages\CreateCharacterisitc::route('/create'),
-            'edit' => Pages\EditCharacterisitc::route('/{record}/edit'),
+            'index' => Pages\ListCharacteristics::route('/'),
+            'create' => Pages\CreateCharacteristic::route('/create'),
+            'edit' => Pages\EditCharacteristic::route('/{record}/edit'),
         ];
     }
 }
